@@ -30,6 +30,7 @@ class dadataRequest():
 
         cursor.execute("""SELECT url, token, language FROM settings""")
         url, token, language = cursor.fetchone()
+
         self.__url = url
         self.__token = token
         self.__language = language
@@ -50,7 +51,7 @@ class dadataRequest():
 
         return True
 
-    def suggest(self, query: str, count: int = 10):
+    def suggest(self, query: str, count: int = 10):  # Makes a request to the dadata server, returning a list of answers
         response = requests.post(self.__url, headers=self.__headers,
                                  json={"query": query, "count": count, "language": self.__language})
         response.raise_for_status()
@@ -89,7 +90,7 @@ class dadataRequest():
         self.__language = language
         self.commitChanges()
 
-    def commitChanges(self):
+    def commitChanges(self):  # Committing changes to sqlite data base
         cursor = self.__connection.cursor()
         cursor.execute(
             f"""UPDATE settings SET url = '{self.__url}', token = '{self.__token}', language = '{self.__language}'""")

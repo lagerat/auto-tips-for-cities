@@ -39,7 +39,7 @@ def changeSetting(dadata: dadataRequest):
 
 
 def main():
-    dadata = dadataRequest()
+    dadata = dadataRequest()  # own class, for creating requests and managing the database
 
     dict_for_geolacation = {
         '0': 'Это точные координаты дома',
@@ -50,7 +50,7 @@ def main():
         '5': 'Координаты не определенны'
     }
 
-    while not dadata.dataInDataBaseIsValid():
+    while not dadata.dataInDataBaseIsValid():  # Until the data in the database is correct,ask the user to correct them
         print("Данные в настройках не валидны, либо ещё не заполненны\nТекущие данные")
         url, token, language = dadata.getSettings()
         print(f'1)URL = {url}\n2)Token = {token}\n3)language = {language}')
@@ -91,11 +91,12 @@ def main():
             number_of_fdress = input()
             if number_of_fdress.isdigit() and 11 > int(number_of_fdress) > 0:
                 number_of_fdress = int(number_of_fdress)
-                string = result[number_of_fdress - 1]['value']
-                result = dadata.suggest(string, count=1)[0]
+                query = result[number_of_fdress - 1]['value']
+                result = dadata.suggest(query, count=1)[0]
                 print(dict_for_geolacation[result['data']['qc_geo']])
                 print(f'Широта - {result["data"]["geo_lat"]}, Долгота - {result["data"]["geo_lon"]}'
                       f'\nПолный адрес {result["unrestricted_value"]}')
+
                 print('Введите новый адрес или "выход", для завершения программы')
                 user_input = input().lower()
             else:
@@ -103,7 +104,6 @@ def main():
         else:
             print('По вашему запросу ничего не нашлось, попробуйте уточнить адрес или ввести его по другому')
             user_input = input().lower()
-
 
 
 if __name__ == '__main__':
